@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telemedicine</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container my-4">
+        <h2>Contact a Doctor via Video Chat</h2>
+        <div>
+            <video id="localVideo" autoplay playsinline></video>
+            <video id="remoteVideo" autoplay playsinline></video>
+        </div>
+        <button onclick="startVideoChat()" class="btn btn-primary mt-3">Start Video Chat</button>
+    </div>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Include JavaScript for video chat -->
+    <script>
+        let peer = null;
+        const localVideo = document.getElementById('localVideo');
+        const remoteVideo = document.getElementById('remoteVideo');
+
+        async function startVideoChat() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+                // Display local video
+                localVideo.srcObject = stream;
+
+                // Initialize peer
+                peer = new SimplePeer({ initiator: true, stream });
+
+                // Handle incoming signal
+                peer.on('signal', (data) => {
+                    // Send signaling data to the other peer (doctor)
+                    // This could be done via WebSocket or a signaling server
+                });
+
+                // Handle incoming stream (doctor's video)
+                peer.on('stream', (remoteStream) => {
+                    // Display remote video
+                    remoteVideo.srcObject = remoteStream;
+                });
+            } catch (error) {
+                console.error('Error accessing media devices:', error);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Call</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fff; /* Dark blue color (blue-black) */
+            color: #ffffff; /* Text color (white) */
+        }
+
+        #video-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    max-width: 800px;
+    background-color: #007bff; /* Blue color */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+        #local-video, video {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        #remote-video-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="video-container">
+        <h2 style="color: #ffffff;">Video Call</h2>
+        <video id="local-video" autoplay></video>
+        <div id="remote-video-container"></div>
+    </div>
+
+    <script src="https://media.twiliocdn.com/sdk/js/video/releases/2.13.1/twilio-video.min.js"></script>
+    <script>
+        const tokenEndpoint = '/token';
+        const videoContainer = document.getElementById('video-container');
+        const localVideo = document.getElementById('local-video');
+        const remoteVideoContainer = document.getElementById('remote-video-container');
+
+        fetch(tokenEndpoint, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                const token = data.token;
+                Twilio.Video.connect(token, { video: true, audio: true, name: 'default_room' }).then(room => {
+                    console.log(`Successfully joined room: ${room.name}`);
+
+                    Twilio.Video.createLocalVideoTrack().then(track => {
+                        localVideo.appendChild(track.attach());
+                    });
+
+                    room.on('participantConnected', participant => {
+                        console.log(`Participant connected: ${participant.identity}`);
+                        participant.tracks.forEach(publication => {
+                            if (publication.isSubscribed && publication.track) {
+                                const trackElement = publication.track.attach();
+                                remoteVideoContainer.appendChild(trackElement);
+                            }
+                        });
+
+                        participant.on('trackSubscribed', track => {
+                            const trackElement = track.attach();
+                            remoteVideoContainer.appendChild(trackElement);
+                        });
+                    });
+                }).catch(error => {
+                    console.error(`Error connecting to Twilio Video: ${error}`);
+                });
+            });
+    </script>
+</body>
+</html>

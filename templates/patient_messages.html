@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Messages</title>
+</head>
+<body>
+    <h1>Patient Messages</h1>
+    <ul>
+        {% for consultation in consultations %}
+            <li>
+                <strong>Name:</strong> {{ consultation.full_name }}<br>
+                <strong>Email:</strong> {{ consultation.email }}<br>
+                <strong>Phone:</strong> {{ consultation.phone }}<br>
+                <strong>Appointment Date:</strong> {{ consultation.appointment_date }}<br>
+                <strong>Message:</strong> {{ consultation.message }}<br>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

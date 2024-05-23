@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Status</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container my-4">
+        <h2 class="text-center mb-4">Action Status</h2>
+
+        {% if action_statuses %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Consultation ID</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for status in action_statuses %}
+                        <tr>
+                            <td>{{ status.appointment_id }}</td>
+                            <td>{{ status.action }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No action statuses found.</p>
+        {% endif %}
+
+        <a href="/logout" class="btn btn-danger logout-link">Logout</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
